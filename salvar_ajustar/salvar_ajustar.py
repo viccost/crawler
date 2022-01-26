@@ -43,6 +43,7 @@ def salvar_arquivo_planilha(planilha: pd.DataFrame, nome: str, formato: str, for
     """Recebe um DataFrame e nome do arquivo para salvá-lo como .xlsx. Ajusta automaticamente o tamanho das colunas.
     Index do DataFrame está setado como falso. E os campos em branco estão mantidos em branco sem alteração."""
     caminho_desktop = escolher_pasta()
+    import pandas as pd
 
     def checar_caminho() -> None:
         from os import path

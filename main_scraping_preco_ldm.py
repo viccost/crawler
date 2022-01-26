@@ -193,4 +193,4 @@ def main():
 
 
 if __name__ == '__main__':
-    verificar_se_tem_grade()
+    main()
