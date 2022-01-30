@@ -1,7 +1,8 @@
 import bs4
+from pagina_produto import PaginaProduto
 
 
-class PaginaProdutoLdm:
+class PaginaProdutoLdm(PaginaProduto):
     pagina_produto: bs4.BeautifulSoup
 
     def __init__(self, pagina):
@@ -17,11 +18,12 @@ class PaginaProdutoLdm:
         return disponivel
 
     # OK
-    def existe_mais_um_sku(self) -> bool:
+    def existe_mais_de_um_sku(self) -> bool:
         existe_grade = False
         try:
-            text = self.pagina_produto.find("div", class_="col-12 col-sm-12 paddingNull product-volts").text.replace(" ",
-                                                                                                                "").replace(
+            text = self.pagina_produto.find("div", class_="col-12 col-sm-12 paddingNull product-volts").text.replace(
+                " ",
+                "").replace(
                 "\n", "").replace("Volts", "").replace("Tensão:", "")
             existe_grade = True if text == '110220' else False
         except AttributeError:
@@ -37,13 +39,6 @@ class PaginaProdutoLdm:
         return grade_ja_selecionada
 
     # OK
-    def status_produto_da_pagina(self) -> tuple:
-        status_disponibilidade = self.disponibilidade()
-        status_mais_de_uma_grade = self.existe_mais_um_sku()
-        status_grade_ldm = self.identificar_grade_selecionada()
-        return status_disponibilidade, status_mais_de_uma_grade, status_grade_ldm
-
-    # OK
     def coletar_preco(self) -> tuple:
         try:
             preco_vista = self.pagina_produto.find("span", {"id": "product-price"}).text
@@ -54,4 +49,3 @@ class PaginaProdutoLdm:
         except AttributeError:
             preco_prazo = ''
         return preco_vista, preco_prazo
-

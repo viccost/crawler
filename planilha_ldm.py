@@ -1,3 +1,5 @@
+import pandas as pd
+
 import salvar_ajustar.salvar_ajustar as sv
 
 
