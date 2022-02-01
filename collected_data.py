@@ -1,15 +1,17 @@
+from typing import Dict, Union, List
 from pandas import DataFrame
 import salvar_ajustar.salvar_ajustar as sv
 
 
 class SpreadsheetCollectData:
+    dataFrameDict: Dict[str]
     dataFrameDict = {"URL Produto": [], "SKU Ferimport": [], "Grade Ferimport": [], "Grade Concorrente": [],
                      "Preço a Vista": [], "Preço a Prazo": [], "Disponibilidade": [], "Observação": []}
 
     def __init__(self):
         pass
 
-    def add_url_error(self, product_url, sku_ferimport, grade_ferimport) -> None:
+    def add_url_error(self, product_url: str, sku_ferimport: int, grade_ferimport: int) -> None:
         error_message = "invalid url"
         self.dataFrameDict["URL Produto"].append(product_url)
         self.dataFrameDict["SKU Ferimport"].append(sku_ferimport)

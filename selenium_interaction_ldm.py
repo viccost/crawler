@@ -1,3 +1,4 @@
+import selenium
 from selenium.common.exceptions import ElementNotInteractableException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
@@ -8,7 +9,8 @@ from typing import Union
 
 
 class SeleniumLdmInteraction(SeleniumInteraction):
-    def alternar_voltagem(self, navegador, url_page) -> Union[SeleniumInteraction.pegar_html_selenium, int]:
+    def alternar_voltagem(self, navegador: selenium.webdriver, url_page: str) -> \
+            Union[SeleniumInteraction.pegar_html_selenium, int]:
         navegador.get(url_page)
         WebDriverWait(navegador, 14).until(
             ec.presence_of_element_located((By.ID, 'product')))

@@ -5,7 +5,7 @@ from pagina_produto import PaginaProduto
 class PaginaProdutoLdm(PaginaProduto):
     pagina_produto: bs4.BeautifulSoup
 
-    def __init__(self, pagina):
+    def __init__(self, pagina: bs4.BeautifulSoup):
         self.pagina_produto = pagina
         pass
 
