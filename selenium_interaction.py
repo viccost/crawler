@@ -13,4 +13,3 @@ class SeleniumInteraction(metaclass=abc.ABCMeta):
         html = navegador.page_source
         pagina_navegador = BeautifulSoup(html, features="lxml")
         return pagina_navegador
-

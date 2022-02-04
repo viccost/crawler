@@ -1,14 +1,9 @@
-import pandas as pd
-
-import salvar_ajustar.salvar_ajustar as sv
-
-
 class FormatoPlanilhaErrado(Exception):
     """Verifique o formato da planilha selecionada"""
     pass
 
 
-class PlanilhaLdm:
+class PlanilhaToScrape:
     import pandas as pd
     planilha = pd.DataFrame
     coluna_a: str = "sku"

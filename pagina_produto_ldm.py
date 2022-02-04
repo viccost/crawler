@@ -1,11 +1,11 @@
-import bs4
+from bs4 import BeautifulSoup
 from pagina_produto import PaginaProduto
 
 
 class PaginaProdutoLdm(PaginaProduto):
-    pagina_produto: bs4.BeautifulSoup
+    pagina_produto: BeautifulSoup
 
-    def __init__(self, pagina: bs4.BeautifulSoup):
+    def __init__(self, pagina: BeautifulSoup):
         self.pagina_produto = pagina
         pass
 

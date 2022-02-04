@@ -1,17 +1,16 @@
-from typing import Dict, Union, List
 from pandas import DataFrame
 import salvar_ajustar.salvar_ajustar as sv
 
 
 class SpreadsheetCollectData:
-    dataFrameDict: Dict[str]
+
     dataFrameDict = {"URL Produto": [], "SKU Ferimport": [], "Grade Ferimport": [], "Grade Concorrente": [],
                      "Preço a Vista": [], "Preço a Prazo": [], "Disponibilidade": [], "Observação": []}
 
     def __init__(self):
         pass
 
-    def add_url_error(self, product_url: str, sku_ferimport: int, grade_ferimport: int) -> None:
+    def add_url_error(self, product_url: str, sku_ferimport: int, grade_ferimport: str) -> None:
         error_message = "invalid url"
         self.dataFrameDict["URL Produto"].append(product_url)
         self.dataFrameDict["SKU Ferimport"].append(sku_ferimport)
@@ -31,7 +30,7 @@ class SpreadsheetCollectData:
         self.dataFrameDict["Preço a Vista"].append(spot_price)
         self.dataFrameDict["Preço a Prazo"].append(price)
         self.dataFrameDict["Disponibilidade"].append(disponibility)
-        if grade_ferimport != grade_concorrente and grade_ferimport != "":
+        if grade_ferimport != grade_concorrente and grade_ferimport != " ":
             observacao = 'não há grade correspondente'
         else:
             observacao = 'ok'
@@ -43,4 +42,4 @@ class SpreadsheetCollectData:
 
     def save_collected_data(self):
         dataFrame = DataFrame.from_dict(self.dataFrameDict)
-        sv.salvar_arquivo_planilha(dataFrame, "Scrape LDM", "xlsx")  # passando df para func que salva a planilha
+        sv.salvar_arquivo_planilha(dataFrame, "Scraping", "xlsx")  # passando df para func que salva a planilha

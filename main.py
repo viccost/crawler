@@ -1,37 +1,43 @@
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-import pagina_produto_ldm
-import planilha_ldm
+from pagina_produto_ldm import PaginaProdutoLdm
+from pagina_produto_dtr import PaginaProdutoDtr
+import planilha_toscrape
 import salvar_ajustar.salvar_ajustar as sv
 from collected_data import SpreadsheetCollectData
 from selenium_interaction_ldm import SeleniumLdmInteraction
+from selenium_interaction_dtr import SeleniumDtrInteraction
 from selenium.webdriver.chrome.options import Options
+from typing import Union
 
 
 def iniciar_chrome() -> webdriver.Chrome:
     options = Options()
     options.headless = True
     driver = webdriver.Chrome()
-    # add headless later
+    # add headless later, didn't work to ldm
     return driver
 
 
 def main():
     planilha_to_scrape = sv.gerar_dataframe(sv.escolher_arquivo())
-    planilha_to_scrape = planilha_to_scrape.fillna("")
+    planilha_to_scrape = planilha_to_scrape.fillna(' ')
     chrome = iniciar_chrome()
     to_scraping = []
     collected_data = SpreadsheetCollectData()
-    iteraction = SeleniumLdmInteraction()
+    iteraction: Union[SeleniumDtrInteraction, SeleniumLdmInteraction] = SeleniumDtrInteraction()
+    concorrent_page: Union[PaginaProdutoLdm, PaginaProdutoDtr] = PaginaProdutoDtr
 
     try:
-        to_scraping = planilha_ldm.PlanilhaLdm(planilha_to_scrape).transformar_em_lista()
-    except planilha_ldm.FormatoPlanilhaErrado:
+        to_scraping = planilha_toscrape.PlanilhaToScrape(planilha_to_scrape).transformar_em_lista()
+    except planilha_toscrape.FormatoPlanilhaErrado:
         print("Formato inválido da planilha!")
         exit()
-
+    progress = 0
     for produto_para_coleta in to_scraping:
+        progress += 1
+        print(progress)
         sku_correspondente = produto_para_coleta[0]
         url_pagina_produto = produto_para_coleta[1]
         grade_procurada = str(produto_para_coleta[2]).upper().replace('V', '')
@@ -44,11 +50,11 @@ def main():
             collected_data.add_url_error(url_pagina_produto, sku_correspondente, grade_procurada)
             continue
 
-        _pagina_produto = pagina_produto_ldm.PaginaProdutoLdm(pagina)
+        _pagina_produto = concorrent_page(pagina)
         disponibilidade, multiplas_grades, grade_pre_selecionada, spot_price, price \
             = _pagina_produto.all_status_product_page()
 
-        if grade_pre_selecionada == grade_procurada or grade_procurada not in '110V220V':
+        if grade_pre_selecionada == grade_procurada or grade_procurada not in '110V220V' or not multiplas_grades:
             spot_price, price = _pagina_produto.coletar_preco()
         elif grade_procurada in '110V220V':
             pagina = iteraction.alternar_voltagem(chrome, url_pagina_produto)
