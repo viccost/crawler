@@ -26,6 +26,7 @@ def main():
     chrome = iniciar_chrome()
     to_scraping = []
     collected_data = SpreadsheetCollectData()
+    # alterar conforme o conccorrente a ser scrapado
     iteraction: Union[SeleniumDtrInteraction, SeleniumLdmInteraction] = SeleniumDtrInteraction()
     concorrent_page: Union[PaginaProdutoLdm, PaginaProdutoDtr] = PaginaProdutoDtr
 
@@ -34,7 +35,9 @@ def main():
     except planilha_toscrape.FormatoPlanilhaErrado:
         print("Formato inválido da planilha!")
         exit()
+
     progress = 0
+
     for produto_para_coleta in to_scraping:
         progress += 1
         print(progress)
