@@ -21,11 +21,16 @@ class PaginaProdutoLdm(PaginaProduto):
     def existe_mais_de_um_sku(self) -> bool:
         existe_grade = False
         try:
-            text = self.pagina_produto.find("div", class_="col-12 col-sm-12 paddingNull product-volts").text.replace(
-                " ",
-                "").replace(
-                "\n", "").replace("Volts", "").replace("Tensão:", "")
-            existe_grade = True if text == '110220' else False
+            text = (
+                self.pagina_produto.find(
+                    "div", class_="col-12 col-sm-12 paddingNull product-volts"
+                )
+                .text.replace(" ", "")
+                .replace("\n", "")
+                .replace("Volts", "")
+                .replace("Tensão:", "")
+            )
+            existe_grade = True if text == "110220" else False
         except AttributeError:
             existe_grade = False
         finally:
@@ -33,7 +38,9 @@ class PaginaProdutoLdm(PaginaProduto):
 
     def identificar_grade_selecionada(self) -> str:
         try:
-            grade_ja_selecionada = self.pagina_produto.find('button', 'btn-product-volts').text.split()[0]
+            grade_ja_selecionada = self.pagina_produto.find(
+                "button", "btn-product-volts"
+            ).text.split()[0]
         except AttributeError:
             grade_ja_selecionada = "Não há"
         return grade_ja_selecionada
@@ -43,9 +50,11 @@ class PaginaProdutoLdm(PaginaProduto):
         try:
             preco_vista = self.pagina_produto.find("span", {"id": "product-price"}).text
         except AttributeError:
-            preco_vista = ''
+            preco_vista = ""
         try:
-            preco_prazo = self.pagina_produto.find("div", class_="product-sell-price-group").text.replace("\n", "")
+            preco_prazo = self.pagina_produto.find(
+                "div", class_="product-sell-price-group"
+            ).text.replace("\n", "")
         except AttributeError:
-            preco_prazo = ''
+            preco_prazo = ""
         return preco_vista, preco_prazo
