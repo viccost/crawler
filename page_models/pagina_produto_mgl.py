@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from pagina_produto import PaginaProduto
+from .pagina_produto import PaginaProduto
 
 
 class PaginaProdutoMGLU(PaginaProduto):
@@ -10,7 +10,9 @@ class PaginaProdutoMGLU(PaginaProduto):
         pass
 
     def disponibilidade(self) -> bool:
-        obj = self.pagina_produto.find("div", {"class": "wrapper-product-unavailable__right"})
+        obj = self.pagina_produto.find(
+            "div", {"class": "wrapper-product-unavailable__right"}
+        )
         if obj:
             disponivel = False
         else:
@@ -22,7 +24,7 @@ class PaginaProdutoMGLU(PaginaProduto):
         existe_grade = False
         try:
             text = self.pagina_produto.find("select", {"id": "variation-label"}).text
-            if '110' in text and '220' in text:
+            if "110" in text and "220" in text:
                 existe_grade = True
             else:
                 existe_grade = False
@@ -46,7 +48,7 @@ class PaginaProdutoMGLU(PaginaProduto):
         def clean_model(text):
             """desconto à vista, sem parcelamento"""
             splited = text.split()
-            idx = splited.index('por')
+            idx = splited.index("por")
             preco_prazo = splited[idx + 2]
             preco_vista = splited[idx + 4]
 
@@ -56,7 +58,7 @@ class PaginaProdutoMGLU(PaginaProduto):
         def dirty_model(text):
             """desconto à vista, com parcelamento"""
             splited = text.split()
-            idx = splited.index('por')
+            idx = splited.index("por")
             preco_vista = splited[idx + 2]
             preco_prazo = splited[idx + 10]
 
@@ -66,11 +68,15 @@ class PaginaProdutoMGLU(PaginaProduto):
         # check the price, the type...
 
         try:
-            preco_vista = self.pagina_produto.find("span", {"class": "price-template__text"}).text
+            preco_vista = self.pagina_produto.find(
+                "span", {"class": "price-template__text"}
+            ).text
         except AttributeError:
             preco_vista = ""
         try:
-            preco_prazo = self.pagina_produto.find("div", {"class": "price-template"}).text
+            preco_prazo = self.pagina_produto.find(
+                "div", {"class": "price-template"}
+            ).text
         except AttributeError:
             preco_prazo = ""
         return preco_vista, preco_prazo

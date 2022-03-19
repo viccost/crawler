@@ -2,7 +2,6 @@ import abc
 
 
 class PaginaProduto(metaclass=abc.ABCMeta):
-
     @abc.abstractmethod
     def disponibilidade(self) -> bool:
         ...

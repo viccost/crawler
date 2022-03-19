@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 
 
 class SeleniumInteraction(metaclass=abc.ABCMeta):
-
     @abc.abstractmethod
     def alternar_voltagem(self, navegador, url_page) -> int:
         ...
