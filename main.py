@@ -16,14 +16,37 @@ from typing import Union
 from constants import HEADER
 import planilha_toscrape
 import salvar_ajustar.salvar_ajustar as sv
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def iniciar_chrome() -> webdriver.Chrome:
     options = Options()
     options.headless = True
-    driver = webdriver.Chrome()
-    # add headless later, didn't work to ldm
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--window-size=1920x1080")
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--verbose")
+    chrome_options.add_experimental_option(
+        "prefs",
+        {
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing_for_trusted_sources_enabled": False,
+            "safebrowsing.enabled": False,
+        },
+    )
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--disable-software-rasterizer")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--log-level=3")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    ''' driver = webdriver.Chrome(
+        ChromeDriverManager().install(), chrome_options=chrome_options
+    )'''
+    driver = webdriver.Chrome(options=chrome_options)
     return driver
+    # add headless later, didn't work to ldm
 
 
 def get_spreadsheet_to_scrape():
@@ -56,7 +79,7 @@ def get_page(url_pagina_produto) -> Union[BeautifulSoup, int]:
         return 0
 
 
-def get_page_model(
+def get_model_page(
     page_model_to_scrape: Union[
         PaginaProdutoLdm, PaginaProdutoDtr, PaginaProdutoB2U, PaginaProdutoKnd
     ],
@@ -81,9 +104,9 @@ def check_if_needs_selenium(
         or searched_grid not in "110V220V"
         or not multiplas_grades
     ):
-        return False
-    else:
         return True
+    else:
+        return False
 
 
 def main():
@@ -99,14 +122,18 @@ def main():
         SeleniumB2UInteraction,
         SeleniumKndInteraction,
     ] = SeleniumKndInteraction()
+
     page_model_to_scrape: Union[
-        PaginaProdutoLdm, PaginaProdutoDtr, PaginaProdutoB2U, PaginaProdutoKnd
+        PaginaProdutoLdm,
+        PaginaProdutoDtr,
+        PaginaProdutoB2U,
+        PaginaProdutoKnd
     ] = PaginaProdutoKnd
 
     to_scraping = transform_in_list(planilha_to_scrape)
 
     for record_to_collect in to_scraping:
-        sleep(2)
+        sleep(1)
         progress += 1
         print(progress)
         sku_ferimport = record_to_collect[0]
@@ -115,18 +142,17 @@ def main():
         page = get_page(url_product)
 
         if page != 0:
-            product_page = get_page_model(page_model_to_scrape, page)
-            get_page_status(product_page)
+            product_page = get_model_page(page_model_to_scrape, page)
             (
                 disponibilidade,
                 multiplas_grades,
-                grade_pre_selecionada,
+                selected_grid,
                 spot_price,
                 price,
             ) = get_page_status(product_page)
             # testing if interaction is necessary
             if check_if_needs_selenium(
-                grade_pre_selecionada, searched_grid, multiplas_grades
+                selected_grid, searched_grid, multiplas_grades
             ):
                 pass
             elif searched_grid in "110V220V":
@@ -138,16 +164,16 @@ def main():
                     (
                         disponibilidade,
                         multiplas_grades,
-                        grade_pre_selecionada,
+                        selected_grid,
                         spot_price,
                         price,
                     ) = product_page.all_status_product_page()
                 else:
-                    print("Não foi possível encontrar o resultado da interação.")
+                    print("Ocorreu algum erro ao interagir com a página")
             collected_data.add_price_collect(
                 url_product,
                 searched_grid,
-                grade_pre_selecionada,
+                selected_grid,
                 spot_price,
                 price,
                 disponibilidade,

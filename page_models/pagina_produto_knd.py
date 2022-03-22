@@ -8,6 +8,7 @@ class PaginaProdutoKnd(PaginaProduto):
 
     def __init__(self, pagina: BeautifulSoup):
         self.pagina_produto = pagina
+        self.flag_grid = 0
         pass
 
     # ok
@@ -33,8 +34,28 @@ class PaginaProdutoKnd(PaginaProduto):
     # há casos de preços diferentes!
     # 100% das vezes que foi verificado o primeiro era 127
     def identificar_grade_selecionada(self) -> str:
-        grade_ja_selecionada = "110"
-        return grade_ja_selecionada
+        grade_ja_selecionada = ''
+        select = self.pagina_produto.find('div',
+                                          {'class': 'options-product mb-2'})
+        try:
+            options = select.find_all('option')
+            grid = options[1].text
+
+            if self.flag_grid == 0:
+                if '127' in grid or '110' in grid:
+                    grade_ja_selecionada = '110'
+                elif '220' in grid:
+                    grade_ja_selecionada = '220'
+            else:
+                grid = options[2].text
+                if '127' in grid or '110' in grid:
+                    grade_ja_selecionada = '110'
+                elif '220' in grid:
+                    grade_ja_selecionada = '220'
+            self.flag_grid += 1
+            return grade_ja_selecionada
+        except AttributeError:
+            return grade_ja_selecionada
 
     # ok
     def coletar_preco(self) -> tuple:
@@ -71,7 +92,7 @@ class PaginaProdutoKnd(PaginaProduto):
                     else:
                         var_price = "Houve um erro ao tentar parsear as informações de parcelamento."
             except AttributeError:
-                var_price = 0
+                ...
             return var_price
 
         preco_vista = preco_vista()

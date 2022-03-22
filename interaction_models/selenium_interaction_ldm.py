@@ -1,5 +1,5 @@
 import selenium
-from selenium.common.exceptions import ElementNotInteractableException
+from selenium.common.exceptions import ElementNotInteractableException, NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -23,5 +23,5 @@ class SeleniumLdmInteraction(SeleniumInteraction):
             )
             sleep(2)
             return self.pegar_html_selenium(navegador)
-        except ElementNotInteractableException:
+        except (ElementNotInteractableException, NoSuchElementException):
             return 0

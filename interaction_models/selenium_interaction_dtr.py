@@ -15,10 +15,11 @@ class SeleniumDtrInteraction(SeleniumInteraction):
     ) -> Union[SeleniumInteraction.pegar_html_selenium, int]:
         navegador.get(url_page)
         WebDriverWait(navegador, 14).until(
-            ec.presence_of_element_located((By.ID, "colunadireitaS"))
+            ec.presence_of_element_located((By.CLASS_NAME, "variacao-volt"))
         )
         try:
-            navegador.find_element(By.CLASS_NAME, "variacao-volt").click()
+            navegador.find_element(By.XPATH, "/html/body/div[1]/div/div[7]/div/div[2]/div/div/div[3]/div[2]/div[3]/div"
+                                             "/div/div[2]/div").click()
             WebDriverWait(navegador, 14).until(
                 ec.presence_of_element_located((By.ID, "colunadireitaS"))
             )
