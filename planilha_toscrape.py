@@ -32,6 +32,7 @@ class PlanilhaToScrape:
         return planilha_correta
 
     def transformar_em_lista(self) -> list:
+        """return an iterator"""
         if self.status_ok:
             lista = self.planilha.values.tolist()
             return lista
