@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import re
-from .pagina_produto import PaginaProduto
+from page_models.pagina_produto import PaginaProduto
 
 
 class PaginaProdutoKnd(PaginaProduto):

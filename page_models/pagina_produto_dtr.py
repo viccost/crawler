@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-from .pagina_produto import PaginaProduto
+from page_models.pagina_produto import PaginaProduto
 
 
 class PaginaProdutoDtr(PaginaProduto):

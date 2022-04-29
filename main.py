@@ -1,3 +1,4 @@
+import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -11,45 +12,22 @@ from interaction_models.selenium_interaction_b2u import SeleniumB2UInteraction
 from interaction_models.selenium_interaction_dtr import SeleniumDtrInteraction
 from collected_data import SpreadsheetCollectData
 from time import sleep
-from selenium.webdriver.chrome.options import Options
 from typing import Union
 from constants import HEADER
 import planilha_toscrape
 import salvar_ajustar.salvar_ajustar as sv
-from webdriver_manager.chrome import ChromeDriverManager
+from chrome_options import ChromeOptions
 
 
 def iniciar_chrome() -> webdriver.Chrome:
-    options = Options()
-    options.headless = True
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--window-size=1920x1080")
-    chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--verbose")
-    chrome_options.add_experimental_option(
-        "prefs",
-        {
-            "download.prompt_for_download": False,
-            "download.directory_upgrade": True,
-            "safebrowsing_for_trusted_sources_enabled": False,
-            "safebrowsing.enabled": False,
-        },
-    )
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--disable-software-rasterizer")
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--log-level=3")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    ''' driver = webdriver.Chrome(
-        ChromeDriverManager().install(), chrome_options=chrome_options
-    )'''
+    chrome_options = ChromeOptions().chrome_options
     driver = webdriver.Chrome(options=chrome_options)
     return driver
     # add headless later, didn't work to ldm
 
 
-def get_spreadsheet_to_scrape():
+def get_spreadsheet_to_scrape() -> pd.DataFrame:
+    """choose the file that contains the data for scrapinG"""
     planilha_to_scrape = sv.gerar_dataframe(sv.escolher_arquivo())
     planilha_to_scrape = planilha_to_scrape.fillna(" ")
     return planilha_to_scrape
@@ -115,20 +93,20 @@ def main():
     collected_data = SpreadsheetCollectData()
     progress = 0
 
-    # alterar conforme o conccorrente a ser scrapado
+    # alterar conforme o conccorrente a ser scrapado NEEDS IMPROVEMENT
     iteraction_model: Union[
         SeleniumDtrInteraction,
         SeleniumLdmInteraction,
         SeleniumB2UInteraction,
         SeleniumKndInteraction,
-    ] = SeleniumKndInteraction()
+    ] = SeleniumLdmInteraction()
 
     page_model_to_scrape: Union[
         PaginaProdutoLdm,
         PaginaProdutoDtr,
         PaginaProdutoB2U,
         PaginaProdutoKnd
-    ] = PaginaProdutoKnd
+    ] = PaginaProdutoLdm
 
     to_scraping = transform_in_list(planilha_to_scrape)
 

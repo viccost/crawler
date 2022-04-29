@@ -54,10 +54,6 @@ class SpreadsheetCollectData:
             observacao = "ok"
         self.dataFrameDict["Observação"].append(observacao)
 
-    def incrementar_lista_verifica_grade(self, product_url, multiple_grid):
-        self.dataFrameDict["URL Produto"].append(product_url)
-        self.dataFrameDict["Grade Concorrente"].append(multiple_grid)
-
     def save_collected_data(self):
         dataFrame = DataFrame.from_dict(self.dataFrameDict)
         sv.salvar_arquivo_planilha(
